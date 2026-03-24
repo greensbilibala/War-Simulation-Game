@@ -1,0 +1,585 @@
+/* 美伊局势模拟器 - 样式 */
+:root {
+  /* Light theme */
+  --bg-dark: #eaf3ff; /* 浅蓝背景 */
+  --bg-panel: #ffffff;
+  --bg-card: #f6f7fb;
+  --border: rgba(59, 130, 246, 0.18);
+  --border-strong: rgba(59, 130, 246, 0.32);
+  --shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+  --accent: #e94560;
+  --accent-dim: #c73e54;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --gold: #f4d03f;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  --usa-blue: #3b82f6;
+  --usa-blue-dim: #2563eb;
+  --iran-green: #22c55e;
+  --iran-green-dim: #16a34a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+.game-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.screen.hidden {
+  display: none;
+}
+
+/* ========== 选边界面 ========== */
+.header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.header h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(233, 69, 96, 0.3);
+}
+
+.subtitle {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.choose-panel {
+  background: var(--bg-panel);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.choose-hint {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.choose-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn-choose {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.choose-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.choose-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-usa {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+}
+.btn-usa:hover {
+  border-color: var(--usa-blue);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+}
+
+.btn-iran {
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+}
+.btn-iran:hover {
+  border-color: var(--iran-green);
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+}
+
+.choose-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.choose-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.log-list.small {
+  max-height: 120px;
+}
+
+.choose-footer {
+  margin-top: 0.75rem;
+  text-align: center;
+}
+
+.choose-footer .btn-small {
+  font-size: 0.85rem;
+}
+
+/* ========== 游戏主界面 ========== */
+.stats-row {
+  margin-bottom: 0.75rem;
+}
+
+.global-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.global-stats .stat {
+  padding: 0.35rem 0.65rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  margin-right: 0.25rem;
+}
+
+.stat-value {
+  font-weight: 700;
+}
+
+.sides-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.side-panel {
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.side-panel h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.side-panel.usa {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.side-panel.iran {
+  background: rgba(34, 197, 94, 0.1);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.side-panel.player {
+  border-color: var(--gold);
+  box-shadow: 0 0 16px rgba(244, 208, 63, 0.2);
+}
+
+.side-stat {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 0.2rem 0;
+}
+
+.side-stat .label {
+  color: var(--text-muted);
+}
+
+.side-stat .val {
+  font-weight: 700;
+}
+
+.side-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 0.45rem 0;
+}
+
+.side-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+/* 主内容 */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.panel {
+  background: var(--bg-panel);
+  border-radius: 10px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.panel h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.panel-header-row h2 {
+  margin: 0;
+}
+
+.strategy-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.strategy-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  min-width: 200px;
+  max-width: 280px;
+}
+
+.strategy-card .strategy-name {
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.strategy-card .strategy-cost,
+.strategy-card .strategy-gain {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+  line-height: 1.35;
+}
+
+.strategy-card .strategy-cost .label,
+.strategy-card .strategy-gain .label {
+  color: rgba(17, 24, 39, 0.55);
+}
+
+.strategy-card .btn-strategy {
+  margin-top: 0.4rem;
+  width: 100%;
+}
+
+.btn-strategy {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.btn-strategy:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-strategy:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 市场与对话 */
+.market-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.market-block {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+.market-title {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.market-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.35rem;
+}
+
+.market-note {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.input {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  color: var(--text);
+  width: 92px;
+}
+
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.chat-item {
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.chat-meta {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-bottom: 0.25rem;
+}
+
+.chat-text {
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.chat-empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.chat-toggle {
+  margin-top: 0.25rem;
+  margin-left: auto;
+}
+
+.result-quote {
+  margin: 0.75rem 0 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+  border-left: 3px solid var(--border-strong);
+  padding-left: 0.75rem;
+}
+
+.badge {
+  display: inline-flex;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.75rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  margin-left: 4px;
+}
+
+@media (max-width: 640px) {
+  .market-grid {
+    grid-template-columns: 1fr;
+  }
+  .sides-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 战报 */
+.log-list {
+  max-height: 200px;
+  overflow-y: auto;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.log-line {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.log-line:last-child {
+  border-bottom: none;
+}
+
+/* 按钮 */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: filter 0.15s, transform 0.1s;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background: var(--accent);
+  color: #fff;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  display: block;
+}
+
+.btn-small {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.btn-small:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.save-load {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+/* 事件弹窗 */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--bg-panel);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid rgba(233, 69, 96, 0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+.modal-content h3 {
+  margin: 0 0 0.75rem;
+  color: var(--accent);
+  font-size: 1.15rem;
+}
+
+.event-desc {
+  margin: 0 0 1rem;
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.event-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-choice {
+  background: var(--bg-card);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.1);
+  text-align: left;
+  padding: 0.6rem 1rem;
+}
+
+.btn-choice:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>美伊局势模拟器</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <!-- 选边界面 -->
+    <section id="screen-choose" class="screen">
+      <header class="header">
+        <h1>美伊局势模拟器</h1>
+        <p class="subtitle">军费 · 兵力 · 股市 · 原油 · 舆论 · 每日策略 · 随机事件 · 第三方中国</p>
+      </header>
+      <div class="choose-panel">
+        <p class="choose-hint">选择你的阵营（约 15 天为一局，支持率/军力崩盘或到期按局势判定胜负）：</p>
+        <div class="choose-buttons">
+          <button id="btn-choose-usa" class="btn btn-choose btn-usa">
+            <img src="assets/usa.png" alt="美国阵营" class="choose-avatar" />
+            <div class="choose-text">
+              <span class="choose-title">美国（进攻方）</span>
+              <span class="choose-desc">军费足、兵力强、看股市与国内支持率</span>
+            </div>
+          </button>
+          <button id="btn-choose-iran" class="btn btn-choose btn-iran">
+            <img src="assets/iran.png" alt="伊朗阵营" class="choose-avatar" />
+            <div class="choose-text">
+              <span class="choose-title">伊朗（防守方）</span>
+              <span class="choose-desc">靠原油收入、海峡牌、可拉中国调停</span>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div id="log-choose" class="log-list small"></div>
+      <div class="choose-footer">
+        <button id="btn-contact-choose" class="btn btn-small">联系作者</button>
+      </div>
+    </section>
+
+    <!-- 游戏主界面 -->
+    <section id="screen-play" class="screen hidden">
+      <header class="header">
+        <h1>美伊局势模拟器</h1>
+        <div class="stats-row">
+          <div class="global-stats">
+            <span class="stat"><span class="stat-label">原油</span> <span id="oil-price" class="stat-value">0</span> $/桶</span>
+            <span class="stat"><span class="stat-label">美股</span> <span id="stock-index" class="stat-value">0</span></span>
+            <span class="stat"><span class="stat-label">第</span> <span id="day" class="stat-value">0</span> 天</span>
+          </div>
+        </div>
+        <div class="sides-stats">
+          <div id="panel-usa" class="side-panel usa">
+            <h3>美国</h3>
+            <div class="side-stat"><span class="label">军费</span><span id="usa-budget" class="val">0</span></div>
+            <div class="side-stat"><span class="label">兵力</span><span id="usa-troops" class="val">0</span></div>
+            <div class="side-stat"><span class="label">支持率</span><span id="usa-approval" class="val">0</span>%</div>
+            <div class="side-stat"><span class="label">石油储备</span><span id="usa-oil" class="val">0</span>（×10万桶）</div>
+            <div class="side-stat"><span class="label">持仓</span><span id="usa-stock-hold" class="val">0</span> 份</div>
+            <div id="geo-metrics" class="geo-metrics">
+              <div class="side-divider"></div>
+              <div class="side-subtitle">局势指标</div>
+              <div class="side-stat"><span class="label">中国</span><span id="china-rel" class="val">0</span></div>
+              <div class="side-stat"><span class="label">紧张度</span><span id="tension" class="val">0</span></div>
+              <div class="side-stat"><span class="label">盟友</span><span id="ally-support" class="val">0</span></div>
+              <div class="side-stat"><span class="label">制裁</span><span id="sanction-level" class="val">0</span></div>
+            </div>
+          </div>
+          <div id="panel-iran" class="side-panel iran">
+            <h3>伊朗</h3>
+            <div class="side-stat"><span class="label">军费</span><span id="iran-budget" class="val">0</span></div>
+            <div class="side-stat"><span class="label">兵力</span><span id="iran-troops" class="val">0</span></div>
+            <div class="side-stat"><span class="label">支持率</span><span id="iran-approval" class="val">0</span>%</div>
+            <div class="side-stat"><span class="label">石油储备</span><span id="iran-oil" class="val">0</span>（×10万桶）</div>
+            <div class="side-stat"><span class="label">中国借贷</span><span id="iran-debt" class="val">0</span></div>
+          </div>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="panel rules-panel">
+          <h2>规则说明</h2>
+          <ul class="rules-list">
+            <li>军费可为负；若军费 &lt; -100：立即失败。</li>
+            <li>石油储备 = 0：本阵营石油耗尽，立即失败。</li>
+            <li>兵力 = 0 且军费不足以再补兵：立即失败。</li>
+            <li>美国美股跌破初始的一半：美国失败。</li>
+            <li>支持率 = 0：该国国内舆论崩盘，立即失败。</li>
+            <li>每日可执行 <strong>3 次策略</strong>，以及 1 次市场操作（美国=美股交易 / 伊朗=中国借贷）+ 1 次石油操作。</li>
+            <li><strong>中国（-10~+10）</strong>：负数=更亲美，正数=更亲伊。影响事件/私信分支；在 15 天到期综合评分时也会影响胜负。</li>
+            <li><strong>紧张度（0~100）</strong>：越高越容易推高油价、压制美股，也更容易触发强硬事件。到期综合评分会扣分（局势越烂，越难赢）。</li>
+            <li><strong>盟友（0~100）</strong>：越高美国越容易获得支持（声明/制裁更有效），到期综合评分加分；过低会拖累美国。</li>
+            <li><strong>制裁（0~100）</strong>：越高伊朗卖油收入折损越大，到期综合评分对伊朗更不利。</li>
+            <li>不同策略/事件/私信会消耗或获得：军费、兵力、石油储备、支持率、中国、紧张度、盟友、制裁等，悬停策略按钮可看说明。</li>
+          </ul>
+        </section>
+        <section class="panel market-panel">
+          <h2>市场操作（每日一次）</h2>
+          <div class="market-grid">
+            <div class="market-block" id="stock-block">
+              <div class="market-title">美股交易（美国可用）</div>
+              <div class="market-actions">
+                <input id="stock-qty" class="input" type="number" min="1" step="1" value="5" />
+                <button id="btn-stock-buy" class="btn btn-small">买入</button>
+                <button id="btn-stock-sell" class="btn btn-small">卖出</button>
+              </div>
+              <div class="market-note">按当日指数成交，盈亏体现在军费；指数跌破 50% 则美国直接失败。</div>
+            </div>
+            <div class="market-block" id="loan-block" style="display:none;">
+              <div class="market-title">中国借贷（伊朗可用）</div>
+              <div class="market-actions">
+                <input id="loan-amount" class="input" type="number" min="50" max="100" step="1" value="60" />
+                <button id="btn-loan-borrow" class="btn btn-small">借贷</button>
+              </div>
+              <div class="market-note">每日最多 1 次，单次 50~100；按未偿本金每日结算 10% 利息。</div>
+            </div>
+            <div class="market-block">
+              <div class="market-title">石油操作（双方可用）</div>
+              <div class="market-actions">
+                <input id="oil-qty" class="input" type="number" min="1" step="1" value="5" />
+                <button id="btn-oil-buy" class="btn btn-small">买入</button>
+                <button id="btn-oil-sell" class="btn btn-small">卖出</button>
+              </div>
+              <div class="market-note">单位为“×10万桶”。美国每日消耗 10；伊朗每日产出 5；石油归零即失败。</div>
+            </div>
+          </div>
+        </section>
+        <section class="panel strategy-panel">
+          <h2>今日策略（选一项）</h2>
+          <div id="strategy-list" class="strategy-list"></div>
+        </section>
+        <section class="panel chat-panel">
+          <div class="panel-header-row">
+            <h2>领导人消息</h2>
+            <button id="btn-open-chat" class="btn btn-small chat-toggle">
+              私信 <span id="chat-unread" class="badge">0</span>
+            </button>
+          </div>
+          <div class="hint">每天会收到 1~2 条私聊/群聊，可选择回复，影响局势。</div>
+          <div id="chat-log" class="chat-log"></div>
+        </section>
+        <section class="panel log-panel">
+          <h2>战报 / 局势</h2>
+          <div id="log" class="log-list"></div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <button id="btn-next" class="btn btn-large">下一日</button>
+        <div class="save-load">
+          <button id="btn-save" class="btn btn-small">存档</button>
+          <button id="btn-load" class="btn btn-small">读档</button>
+          <button id="btn-contact" class="btn btn-small">联系作者</button>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <!-- 联系作者弹窗 -->
+  <div id="contact-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>联系作者</h3>
+      <p class="event-desc">邮箱 greensbilibala@gmail.com</p>
+      <div class="event-choices">
+        <button id="btn-contact-close" class="btn btn-large">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 事件弹窗 -->
+  <div id="event-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="event-title"></h3>
+      <p id="event-desc" class="event-desc"></p>
+      <div id="event-choices" class="event-choices"></div>
+    </div>
+  </div>
+
+  <!-- 对话弹窗 -->
+  <div id="chat-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="chat-title"></h3>
+      <p id="chat-desc" class="event-desc"></p>
+      <div id="chat-choices" class="event-choices"></div>
+    </div>
+  </div>
+
+  <!-- 结算弹窗 -->
+  <div id="result-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="result-title"></h3>
+      <p id="result-reason" class="event-desc"></p>
+      <p class="result-quote">战争之下，没有赢家，只有满目疮痍。为残酷游戏最终买单的，永远是普通的百姓。<br/>祈愿世界和平，再无伤害。</p>
+      <div class="event-choices">
+        <button id="btn-restart" class="btn btn-large">再来一次</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/game.js"></script>
+  <script src="js/events.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+!function(p){"use strict";!function(t){var s=window,e=document,i=p,c="".concat("https:"===e.location.protocol?"https://":"http://","sdk.51.la/js-sdk-pro.min.js"),n=e.createElement("script"),r=e.getElementsByTagName("script")[0];n.type="text/javascript",n.setAttribute("charset","UTF-8"),n.async=!0,n.src=c,n.id="LA_COLLECT",i.d=n;var o=function(){s.LA.ids.push(i)};s.LA?s.LA.ids&&o():(s.LA=p,s.LA.ids=[],o()),r.parentNode.insertBefore(n,r)}()}({id:"3PLJkgrBtgtkJoYL",ck:"3PLJkgrBtgtkJoYL"});
+  </script>
+</body>
+</html>
